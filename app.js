@@ -150,6 +150,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
+                    // 检查是否在GitHub Pages环境
+                    if (window.location.host.includes('github.io')) {
+                        alert('GitHub Pages环境可能不支持Excel文件处理，请下载到本地运行或使用CSV格式');
+                        return;
+                    }
+                    
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {type: 'array'});
                     
@@ -163,7 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const textData = jsonData.map(row => row.join('\t')).join('\n');
                     dataTextArea.value = textData;
                 } catch (error) {
-                    alert('Excel文件处理错误: ' + error.message);
+                    alert('Excel文件处理错误: ' + error.message + 
+                          '\n可能原因: GitHub Pages环境限制或文件格式不正确\n建议: 下载到本地运行或使用CSV格式');
                     console.error(error);
                 }
             };
