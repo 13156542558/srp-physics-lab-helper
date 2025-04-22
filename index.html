@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大学物理实验数据处理助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>大学物理实验数据处理助手</h1>
+        </header>
+        
+        <div class="experiment-selector">
+            <label for="experiment-type">实验名称：</label>
+            <select id="experiment-type">
+                <option value="mechanics">力学实验</option>
+                <option value="electricity">电学实验</option>
+                <option value="optics">光学实验</option>
+                <option value="thermodynamics">热学实验</option>
+            </select>
+        </div>
+
+        <div class="data-input">
+            <h2>数据输入</h2>
+            <textarea id="data-text" placeholder="请选择实验类型后，此处将显示数据输入格式说明"></textarea>
+            <div class="file-upload">
+                <input type="file" id="data-file">
+                <button id="upload-btn">上传数据文件</button>
+            </div>
+        </div>
+
+        <div class="data-processing">
+            <h2>数据处理</h2>
+            <div class="processing-options">
+                <!-- 处理选项将根据实验类型动态生成 -->
+            </div>
+            <button id="process-btn">处理数据</button>
+        </div>
+
+        <div class="results">
+            <h2>结果展示</h2>
+            <div class="data-table">
+                <!-- 数据表格将通过JavaScript动态生成 -->
+            </div>
+            <div class="data-chart">
+                <canvas id="result-chart"></canvas>
+            </div>
+            <div class="results-display">
+                <!-- 计算结果将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
