@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p style="margin: 5px 0;">相位差: ${waveform.phi}°</p>
                             <p style="margin: 5px 0;">fy/fx: ${(waveform.fy/waveform.fx).toFixed(2)}</p>
                             <img src="${waveform.imagePath}" 
-                                 alt="波形图 fy/fx=${(waveform.fy/waveform.fx).toFixed(2)} φ=${waveform.phi}°"
+                                 alt="波形图 fy/fx=${(waveform.fy/waveform.fx).toFixed(2)} φ=${waveform.phi}π"
                                  style="max-width: 300px; height: auto; border: 1px solid #eee;">
                         </div>
                     `;
