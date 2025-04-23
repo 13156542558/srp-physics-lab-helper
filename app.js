@@ -163,11 +163,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    // 检查是否在GitHub Pages环境
-                    if (window.location.host.includes('github.io')) {
-                        alert('GitHub Pages环境可能不支持Excel文件处理，请下载到本地运行或使用CSV格式');
-                        return;
-                    }
+                    // // 检查是否在GitHub Pages环境
+                    // if (window.location.host.includes('github.io')) {
+                    //     alert('GitHub Pages环境可能不支持Excel文件处理，请下载到本地运行或使用CSV格式');
+                    //     return;
+                    // }
                     
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {type: 'array'});
