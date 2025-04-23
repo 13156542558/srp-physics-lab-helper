@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <h4 style="margin: 0 0 10px 0;">波形参数</h4>
                             <p style="margin: 5px 0;">fy: ${waveform.fy} Hz</p>
                             <p style="margin: 5px 0;">fx: ${waveform.fx} Hz</p>
-                            <p style="margin: 5px 0;">相位差: ${waveform.phi}°</p>
+                            <p style="margin: 5px 0;">相位差: ${waveform.phi}π</p>
                             <p style="margin: 5px 0;">fy/fx: ${(waveform.fy/waveform.fx).toFixed(2)}</p>
                             <img src="${waveform.imagePath}" 
                                  alt="波形图 fy/fx=${(waveform.fy/waveform.fx).toFixed(2)} φ=${waveform.phi}π"
