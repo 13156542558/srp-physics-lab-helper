@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
             mechanics: "请输入力学实验数据，每行一组数据，用空格或逗号分隔\n例如：\n0.1 0.98\n0.2 1.96\n0.3 2.94\n(第一列为位移/时间，第二列为力/速度)",
             electricity: "请输入电学实验数据，每行一组数据，用空格或逗号分隔\n例如：\n1.0 0.1\n2.0 0.2\n3.0 0.3\n(第一列为电压(V)，第二列为电流(A))",
             optics: "请输入光学实验数据，每行一组数据，用空格或逗号分隔\n例如：\n30 20\n45 28\n60 35\n(第一列为入射角(度)，第二列为折射角(度))",
-            thermodynamics: "请输入热学实验数据，每行一组数据，用空格或逗号分隔\n例如：\n100 0.5 10\n200 0.5 20\n300 0.5 30\n(第一列为热量(J)，第二列为质量(kg)，第三列为温度变化(K))"
+            thermodynamics: "请输入热学实验数据，每行一组数据，用空格或逗号分隔\n例如：\n100 0.5 10\n200 0.5 20\n300 0.5 30\n(第一列为热量(J)，第二列为质量(kg)，第三列为温度变化(K))",
+            oscilloscope: "请输入示波器数据，每行一组数据，用空格或逗号分隔\n例如：\n50 100 0.25\n60 120 0.5\n(第一列为fy，第二列为fx，第三列为相位差φ，φ取值为0-1.75,0.25为间隔)"
         };
         dataTextArea.placeholder = hints[currentExperimentType] || "请在此输入实验数据...";
     }
@@ -84,6 +85,18 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
 
         switch(experimentType) {
+            case 'oscilloscope':
+                return [
+                    ...commonOptions,
+                    {
+                        type: 'checkbox',
+                        id: 'waveform-display',
+                        name: 'waveform-display',
+                        value: 'waveform',
+                        label: '显示波形图',
+                        checked: true
+                    }
+                ];
             case 'mechanics':
                 return [
                     ...commonOptions,
@@ -279,9 +292,48 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'thermodynamics':
                 processedData.results = calculateThermodynamics(data);
                 break;
+            case 'oscilloscope':
+                processedData.results = calculateOscilloscope(data);
+                break;
         }
 
         return processedData;
+    }
+
+    // 数字示波器计算
+    function calculateOscilloscope(data) {
+        const results = {};
+        const options = getSelectedOptions();
+
+        if (options.includes('waveform')) {
+            // 根据fy/fx比值和φ值选择对应图片
+            const waveformImages = data.map(([fy, fx, phi]) => {
+                const ratio = fy / fx;
+                let ratioDir;
+                
+                // 确定fy/fx比值目录
+                if (Math.abs(ratio - 1) < 0.1) ratioDir = '1_1';
+                else if (Math.abs(ratio - 0.5) < 0.1) ratioDir = '1_2';
+                else if (Math.abs(ratio - 0.333) < 0.1) ratioDir = '1_3';
+                else if (Math.abs(ratio - 0.666) < 0.1) ratioDir = '2_3';
+                else ratioDir = '1_1'; // 默认
+
+                // 验证相位差是否在允许的离散值范围内
+                const allowedPhases = [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75];
+                const normalizedPhi = allowedPhases.includes(phi) ? phi : 0;
+                
+                return {
+                    fy,
+                    fx,
+                    phi,
+                    imagePath: `Digital_Oscilloscope/${ratioDir}/${normalizedPhi}.png`
+                };
+            });
+
+            results.waveforms = waveformImages;
+        }
+
+        return results;
     }
 
     // 力学实验计算
@@ -417,7 +469,25 @@ document.addEventListener('DOMContentLoaded', function() {
         for (const [key, value] of Object.entries(results)) {
             html += `<div class="result-item"><strong>${key}:</strong> `;
             
-            if (typeof value === 'object') {
+            if (key === 'waveforms') {
+                // 特殊处理波形图显示
+                html += '<div class="waveform-container" style="display: flex; flex-wrap: wrap; gap: 20px;">';
+                value.forEach(waveform => {
+                    html += `
+                        <div class="waveform-item" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                            <h4 style="margin: 0 0 10px 0;">波形参数</h4>
+                            <p style="margin: 5px 0;">fy: ${waveform.fy} Hz</p>
+                            <p style="margin: 5px 0;">fx: ${waveform.fx} Hz</p>
+                            <p style="margin: 5px 0;">相位差: ${waveform.phi}°</p>
+                            <p style="margin: 5px 0;">fy/fx: ${(waveform.fy/waveform.fx).toFixed(2)}</p>
+                            <img src="${waveform.imagePath}" 
+                                 alt="波形图 fy/fx=${(waveform.fy/waveform.fx).toFixed(2)} φ=${waveform.phi}°"
+                                 style="max-width: 300px; height: auto; border: 1px solid #eee;">
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            } else if (typeof value === 'object') {
                 html += '<ul>';
                 for (const [subKey, subValue] of Object.entries(value)) {
                     html += `<li>${subKey}: ${subValue}</li>`;
